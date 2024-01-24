@@ -3,18 +3,23 @@ const express = require("express");
 const validationResult = require("express-validator").validationResult;
 const check = require("express-validator").check;
 const cors = require("cors");
+const Lead = require('./models/lead.model');
+const connectToDatabase = require('./db/database');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
+connectToDatabase()
+
 app.get("/lead-data/:id", async (req, res) => {
   const id = req.params.id;
   let content;
 
   try {
-    content = await fs.readFile(`data/${id}.txt`, "utf-8");
+    const searchLead = await Lead.findById(req.params.id)
+    return res.status(200).json(searchLead)
   } catch (err) {
     return res.sendStatus(404);
   }
@@ -41,22 +46,28 @@ app.post(
     check("lead_source").isString().withMessage("lead_source is required key"),
   ],
   async (req, res) => {
+    console.log('req :>> ', req);
     const errors = validationResult(req).array();
-    if(errors && errors.length){
-        res.status(400).json({ errors })
-    } 
-    const content = req.body;
-    if (!content) {
-      return res.sendStatus(400);
+    try {
+      if(errors && errors.length){
+          res.status(400).json({ errors })
+      } 
+      const content = req.body;
+      if (!content) {
+        return res.sendStatus(400);
+      }
+
+      const lead = new Lead(req.body)
+      await lead.save();
+
+      res.status(201).json({
+        status: 201,
+        data: lead
+      });
+    } catch (error) {
+      console.log('error :>> ', error);
+      return res.status(400).json({errorStatus: 400, errorMessage: errors})
     }
-
-    await fs.mkdir("data/", { recursive: true });
-    await fs.writeFile(`data/${Date.now()}.txt`, JSON.stringify(content));
-
-    res.status(201).json({
-      status: 201,
-      data: content
-    });
   }
 );
 
