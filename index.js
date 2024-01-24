@@ -39,6 +39,7 @@ app.post(
     check("lead_source").isString().withMessage("lead_source is required key"),
   ],
   async (req, res) => {
+    console.log('req :>> ', req);
     const errors = validationResult(req).array();
     try {
       if(errors && errors.length){
