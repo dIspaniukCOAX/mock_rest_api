@@ -14,19 +14,12 @@ app.use(cors());
 connectToDatabase()
 
 app.get("/lead-data/:id", async (req, res) => {
-  const id = req.params.id;
-  let content;
-
   try {
     const searchLead = await Lead.findById(req.params.id)
     return res.status(200).json(searchLead)
   } catch (err) {
     return res.sendStatus(404);
   }
-
-  res.json({
-    content: content,
-  });
 });
 
 app.post(
@@ -46,7 +39,6 @@ app.post(
     check("lead_source").isString().withMessage("lead_source is required key"),
   ],
   async (req, res) => {
-    console.log('req :>> ', req);
     const errors = validationResult(req).array();
     try {
       if(errors && errors.length){
