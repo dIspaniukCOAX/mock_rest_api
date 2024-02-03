@@ -1,4 +1,3 @@
-const fs = require("fs/promises");
 const express = require("express");
 const validationResult = require("express-validator").validationResult;
 const check = require("express-validator").check;
@@ -18,7 +17,7 @@ app.get("/lead-data/:id", async (req, res) => {
     const searchLead = await Lead.findById(req.params.id)
     return res.status(200).json(searchLead)
   } catch (err) {
-    return res.sendStatus(404);
+    return res.status(400).json({errorStatus: 400, errorMessage: err})
   }
 });
 
@@ -39,7 +38,6 @@ app.post(
     check("lead_source").isString().withMessage("lead_source is required key"),
   ],
   async (req, res) => {
-    console.log('req :>> ', req);
     const errors = validationResult(req).array();
     try {
       if(errors && errors.length){
@@ -63,5 +61,18 @@ app.post(
     }
   }
 );
+
+app.get("/test/lead-data", [
+  check('f_name').isString(),
+  check('l_name').isString(),
+  check('lead_email').isString(),
+  check('lead_phone').isString(),
+], async (req, res) => {
+  try {
+    console.log('req.params :>> ', req.params);
+  } catch (error) {
+    return res.status(400).json({errorStatus: 400, errorMessage: error})
+  }
+})
 
 app.listen(8001, () => console.log("REST API Server is running..."));
