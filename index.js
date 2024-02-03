@@ -69,7 +69,8 @@ app.get("/test/lead-data", [
   check('lead_phone').isString(),
 ], async (req, res) => {
   try {
-    console.log('req.params :>> ', req.params);
+    console.log('req.params :>> ', req);
+    return res.status(200)
   } catch (error) {
     return res.status(400).json({errorStatus: 400, errorMessage: error})
   }
