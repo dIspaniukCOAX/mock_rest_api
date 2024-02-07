@@ -18,7 +18,7 @@ app.get("/lead-data/:id", async (req, res) => {
     const searchLead = await Lead.findById(req.params.id);
     return res.status(200).json(searchLead);
   } catch (err) {
-    return res.status(400).json({ errorStatus: 400, errorMessage: err });
+    return res.status(404).json({ errorStatus: 404, errorMessage: err });
   }
 });
 
@@ -64,8 +64,8 @@ app.post(
     } catch (error) {
       console.log("error :>> ", error);
       return res
-        .status(400)
-        .json({ errorStatus: 400, errorMessage: error });
+        .status(404)
+        .json({ errorStatus: 404, errorMessage: error });
     }
   }
 );
@@ -92,7 +92,8 @@ app.get(
         data: leadGetTest
       });
     } catch (error) {
-      return res.status(400).json({ errorStatus: 400, errorMessage: error });
+      console.log('error :>> ', error);
+      return res.status(404).json({ errorStatus: 404, errorMessage: error });
     }
   }
 );
