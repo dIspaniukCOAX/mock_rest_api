@@ -16,6 +16,7 @@ connectToDatabase();
 
 app.post("/plain-text", async(req,res) => {
   try {
+    console.log('req :>> ', req);
     console.log('req.body :>> ', req.body);
     return res.status(200).json(req.body);
   } catch (error) {
