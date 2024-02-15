@@ -9,9 +9,20 @@ const connectToDatabase = require("./db/database");
 const app = express();
 
 app.use(express.json());
+app.use(express.text());
 app.use(cors());
 
 connectToDatabase();
+
+app.post("/plain-text", async(req,res) => {
+  try {
+    console.log('req.body :>> ', req.body);
+    return res.status(200).json(req.body);
+  } catch (error) {
+    console.log('error :>> ', error);
+    return error
+  }
+})
 
 app.get("/lead-data/:id", async (req, res) => {
   try {
